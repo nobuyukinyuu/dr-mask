@@ -1,0 +1,72 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://DrMask.shader" type="Shader" id=1]
+[ext_resource path="res://testImages/serril_nude.png" type="Texture" id=2]
+[ext_resource path="res://testImages/salt.png" type="Texture" id=3]
+[ext_resource path="res://testImages/serril_mesh.png" type="Texture" id=4]
+[ext_resource path="res://testImages/serril.png" type="Texture" id=5]
+
+[sub_resource type="ProxyTexture" id=4]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 1 )
+shader_param/unmask = null
+shader_param/block_size = 4
+shader_param/salt = SubResource( 4 )
+
+[sub_resource type="Shader" id=2]
+code = "shader_type canvas_item;
+uniform sampler2D salt;
+uniform int block_size = 8;
+
+void fragment(){
+	ivec2 n = ivec2( vec2(textureSize(TEXTURE, 0)) * UV / vec2(float(block_size)) );
+
+	n.x = n.x % 2;
+	n.y = n.y % 2;
+
+	vec2 uv = UV;
+	
+//	uv.x += mod(uv.y, 1.0);
+//	uv.y = mod(uv.y + texture(salt, vec2(UV.x, 0.5)).b + 0.5, 1.0);
+	
+	vec4 c = texture(TEXTURE, uv);
+	
+	if ((n.x ^ n.y) > 0)  c.rgb = 1.0-c.rgb;
+	
+	COLOR.rgb = c.rgb;
+}"
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 2 )
+shader_param/block_size = 8
+shader_param/salt = ExtResource( 3 )
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="serril_nude" type="Sprite" parent="."]
+position = Vector2( 580.126, 312 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 2 )
+
+[node name="serril" type="Sprite" parent="."]
+material = SubResource( 1 )
+position = Vector2( 580.126, 312 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 4 )
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="."]
+copy_mode = 2
+
+[node name="Control" type="Sprite" parent="."]
+visible = false
+material = SubResource( 3 )
+position = Vector2( 220.325, 322.107 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 5 )
