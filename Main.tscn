@@ -6,40 +6,61 @@
 [ext_resource path="res://testImages/serril_mesh.png" type="Texture" id=4]
 [ext_resource path="res://testImages/serril.png" type="Texture" id=5]
 
-[sub_resource type="ProxyTexture" id=4]
+[sub_resource type="ProxyTexture" id=1]
 
-[sub_resource type="ShaderMaterial" id=1]
+[sub_resource type="ShaderMaterial" id=2]
 shader = ExtResource( 1 )
 shader_param/unmask = null
 shader_param/block_size = 4
-shader_param/salt = SubResource( 4 )
+shader_param/salt = SubResource( 1 )
 
-[sub_resource type="Shader" id=2]
+[sub_resource type="Shader" id=3]
 code = "shader_type canvas_item;
+uniform bool enabled = true;
 uniform sampler2D salt;
 uniform int block_size = 8;
 
+
 void fragment(){
-	ivec2 n = ivec2( vec2(textureSize(TEXTURE, 0)) * UV / vec2(float(block_size)) );
+	
+	ivec2 pos = ivec2( vec2(textureSize(TEXTURE, 0)) * UV / vec2(float(block_size)) );
+	ivec2 n = pos;
 
 	n.x = n.x % 2;
 	n.y = n.y % 2;
-
+	
+	//Setup the glass block masking.
 	vec2 uv = UV;
-	
-//	uv.x += mod(uv.y, 1.0);
-//	uv.y = mod(uv.y + texture(salt, vec2(UV.x, 0.5)).b + 0.5, 1.0);
-	
+	vec2 fpos = vec2(textureSize(TEXTURE, 0)) * UV;  // Pixel position
+	fpos -= vec2(pos * block_size);  //now offset from block origin.
+
+	if (n.x+n.y == 1)  //hflip
+	{
+		//Subtract specified pixel offset from the block origin + blocksize
+		uv.x = vec2(pos*block_size + block_size).x - fpos.x;
+		uv.x /= float(textureSize(TEXTURE,0).x);
+
+	} else if (n.x+n.y == 2) { //vflip
+		uv.y = vec2(pos*block_size + block_size).y - fpos.y;
+		uv.y /= float(textureSize(TEXTURE,0).y);
+
+	} else if (n.x+n.y == 0) { //swizzle + rotate 180 (essentially rotate 270)
+		fpos.xy = fpos.yx;
+		uv = vec2(pos*block_size + block_size) - fpos;
+		uv /= vec2(textureSize(TEXTURE,0));
+	}
+		
 	vec4 c = texture(TEXTURE, uv);
-	
-	if ((n.x ^ n.y) > 0)  c.rgb = 1.0-c.rgb;
-	
+		
 	COLOR.rgb = c.rgb;
+	if (!enabled)  COLOR = texture(TEXTURE, UV);
+	
 }"
 
-[sub_resource type="ShaderMaterial" id=3]
-shader = SubResource( 2 )
-shader_param/block_size = 8
+[sub_resource type="ShaderMaterial" id=4]
+shader = SubResource( 3 )
+shader_param/enabled = true
+shader_param/block_size = 64
 shader_param/salt = ExtResource( 3 )
 
 [node name="Control" type="Control"]
@@ -56,7 +77,7 @@ scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 2 )
 
 [node name="serril" type="Sprite" parent="."]
-material = SubResource( 1 )
+material = SubResource( 2 )
 position = Vector2( 580.126, 312 )
 scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 4 )
@@ -65,8 +86,7 @@ texture = ExtResource( 4 )
 copy_mode = 2
 
 [node name="Control" type="Sprite" parent="."]
-visible = false
-material = SubResource( 3 )
+material = SubResource( 4 )
 position = Vector2( 220.325, 322.107 )
 scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 5 )
