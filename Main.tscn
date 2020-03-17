@@ -1,92 +1,129 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://DrMask.shader" type="Shader" id=1]
-[ext_resource path="res://testImages/serril_nude.png" type="Texture" id=2]
+[ext_resource path="res://testImages/Illustration3.png" type="Texture" id=2]
 [ext_resource path="res://testImages/salt.png" type="Texture" id=3]
-[ext_resource path="res://testImages/serril_mesh.png" type="Texture" id=4]
-[ext_resource path="res://testImages/serril.png" type="Texture" id=5]
-
-[sub_resource type="ProxyTexture" id=1]
+[ext_resource path="res://testImages/Illustration3b.png" type="Texture" id=4]
+[ext_resource path="res://GlassBlockGeneric.shader" type="Shader" id=5]
+[ext_resource path="res://Main.gd" type="Script" id=6]
+[ext_resource path="res://testImages/serril_face_scrambled.png" type="Texture" id=7]
 
 [sub_resource type="ShaderMaterial" id=2]
 shader = ExtResource( 1 )
 shader_param/unmask = null
 shader_param/block_size = 4
-shader_param/salt = SubResource( 1 )
-
-[sub_resource type="Shader" id=3]
-code = "shader_type canvas_item;
-uniform bool enabled = true;
-uniform sampler2D salt;
-uniform int block_size = 8;
-
-
-void fragment(){
-	
-	ivec2 pos = ivec2( vec2(textureSize(TEXTURE, 0)) * UV / vec2(float(block_size)) );
-	ivec2 n = pos;
-
-	n.x = n.x % 2;
-	n.y = n.y % 2;
-	
-	//Setup the glass block masking.
-	vec2 uv = UV;
-	vec2 fpos = vec2(textureSize(TEXTURE, 0)) * UV;  // Pixel position
-	fpos -= vec2(pos * block_size);  //now offset from block origin.
-
-	if (n.x+n.y == 1)  //hflip
-	{
-		//Subtract specified pixel offset from the block origin + blocksize
-		uv.x = vec2(pos*block_size + block_size).x - fpos.x;
-		uv.x /= float(textureSize(TEXTURE,0).x);
-
-	} else if (n.x+n.y == 2) { //vflip
-		uv.y = vec2(pos*block_size + block_size).y - fpos.y;
-		uv.y /= float(textureSize(TEXTURE,0).y);
-
-	} else if (n.x+n.y == 0) { //swizzle + rotate 180 (essentially rotate 270)
-		fpos.xy = fpos.yx;
-		uv = vec2(pos*block_size + block_size) - fpos;
-		uv /= vec2(textureSize(TEXTURE,0));
-	}
-		
-	vec4 c = texture(TEXTURE, uv);
-		
-	COLOR.rgb = c.rgb;
-	if (!enabled)  COLOR = texture(TEXTURE, UV);
-	
-}"
+shader_param/salt = ExtResource( 3 )
 
 [sub_resource type="ShaderMaterial" id=4]
-shader = SubResource( 3 )
+shader = ExtResource( 5 )
 shader_param/enabled = true
-shader_param/block_size = 64
+shader_param/block_size = 40
+shader_param/useSalt = true
 shader_param/salt = ExtResource( 3 )
+
+[sub_resource type="ViewportTexture" id=5]
+viewport_path = NodePath("Viewport")
+
+[sub_resource type="GDScript" id=6]
+script/source = "extends Sprite
+
+func _draw():
+	#Split the pass phrase into requisite components.
+	#Only the 6LSB are used per character, for now.
+	
+	$\"..\".size.x = len(owner.get_node(\"PassPhrase\").text) * 2
+	
+	var i = 1
+	for c in owner.get_node(\"PassPhrase\").text:
+		print (ord(c))
+		var cols = get_char_colors(c)
+		var pos = Vector2(i, 0)
+
+		draw_line(pos, pos + Vector2(0, 32), cols[0])
+		pos.x += 1
+		draw_line(pos, pos + Vector2(0, 32), cols[1])
+
+		i += 2
+
+
+func get_char_colors(c):
+	c = ord(c)
+	var output = [Color(0), Color(0)]
+	var flag = []
+	
+	#Split the ordinal. Apply bitmask. Pos is from LSB on right, little-endian
+	for i in 6:
+		var bit = c
+		bit >>= i
+		flag.append(bit & 0x1)
+		
+	#Ok, we should have 6 bits now.  Output color.
+	output[0] = Color(flag[0], flag[1], flag[2])
+	output[1] = Color(!flag[3], !flag[4], flag[5])
+	
+	return output
+"
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource( 6 )
 __meta__ = {
 "_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
-[node name="serril_nude" type="Sprite" parent="."]
-position = Vector2( 580.126, 312 )
-scale = Vector2( 0.5, 0.5 )
-texture = ExtResource( 2 )
-
-[node name="serril" type="Sprite" parent="."]
-material = SubResource( 2 )
-position = Vector2( 580.126, 312 )
+[node name="Base" type="Sprite" parent="."]
+position = Vector2( 223.926, 617.964 )
 scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 4 )
 
+[node name="Overlay" type="Sprite" parent="."]
+material = SubResource( 2 )
+position = Vector2( 223.926, 617.964 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 2 )
+
 [node name="BackBufferCopy" type="BackBufferCopy" parent="."]
 copy_mode = 2
+__meta__ = {
+"_edit_lock_": true
+}
 
-[node name="Control" type="Sprite" parent="."]
+[node name="GlassBlock" type="Sprite" parent="."]
 material = SubResource( 4 )
-position = Vector2( 220.325, 322.107 )
-scale = Vector2( 0.5, 0.5 )
-texture = ExtResource( 5 )
+position = Vector2( 784.527, 544.108 )
+texture = ExtResource( 7 )
+
+[node name="PassPhrase" type="LineEdit" parent="."]
+margin_left = 58.0
+margin_top = 170.119
+margin_right = 259.0
+margin_bottom = 194.119
+text = "abc"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="PassPhrase"]
+margin_left = 2.0
+margin_top = 40.0
+margin_right = 902.0
+margin_bottom = 104.0
+texture = SubResource( 5 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Viewport" type="Viewport" parent="."]
+size = Vector2( 256, 32 )
+own_world = true
+hdr = false
+disable_3d = true
+usage = 1
+render_target_v_flip = true
+
+[node name="Sprite" type="Sprite" parent="Viewport"]
+script = SubResource( 6 )
+[connection signal="text_changed" from="PassPhrase" to="." method="_on_PassPhrase_text_changed"]

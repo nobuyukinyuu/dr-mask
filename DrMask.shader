@@ -32,7 +32,7 @@ void fragment() {
 
 	n.x = n.x % 2;
 	n.y = n.y % 2;
-	if ((n.x ^ n.y) > 0)  diff.rgb = 1.0-diff.bgr;
+//	if ((n.x ^ n.y) > 0)  diff.rgb = 1.0-diff.bgr;
  	
 
 	COLOR = diff;
