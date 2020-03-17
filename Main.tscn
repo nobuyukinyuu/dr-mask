@@ -102,7 +102,7 @@ margin_left = 58.0
 margin_top = 112.84
 margin_right = 259.0
 margin_bottom = 136.84
-text = "@II@"
+text = "01234567"
 __meta__ = {
 "_edit_use_anchors_": false
 }
