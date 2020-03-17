@@ -43,20 +43,20 @@ void fragment(){
 		
 		//Which pixel are we on in the salt texture?  Presumes a sample on the first row only.
 		int px = (pos.x + pos.y * textureSize(TEXTURE,0).x) % textureSize(salt,0).x;
-		vec4 saltval = texture(salt, vec2(ivec2(px,0)) );
+		vec4 saltval = texture(salt, vec2(float(px),0.0) );
 		
-		if (saltval.r >= 0.9)  //hflip
+		if (saltval.r >= 0.5)  //hflip
 		{
 			//Subtract specified pixel offset from the block origin + blocksize
 			uv.x = vec2(pos*block_size + block_size).x - fpos.x;
 			uv.x /= float(textureSize(TEXTURE,0).x);
 		} 
-		if (saltval.g >= 0.9) { //vflip
+		if (saltval.g >= 0.5) { //vflip
 			uv.y = vec2(pos*block_size + block_size).y - fpos.y;
 			uv.y /= float(textureSize(TEXTURE,0).y);
 	
 		}
-		if (saltval.b >= 0.9) { //swizzle
+		if (saltval.b >= 0.5) { //swizzle
 			fpos.xy = fpos.yx;
 			uv = vec2(pos*block_size + block_size) - fpos;
 			uv /= vec2(textureSize(TEXTURE,0));

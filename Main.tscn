@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://DrMask.shader" type="Shader" id=1]
 [ext_resource path="res://testImages/Illustration3.png" type="Texture" id=2]
@@ -14,12 +14,14 @@ shader_param/unmask = null
 shader_param/block_size = 4
 shader_param/salt = ExtResource( 3 )
 
+[sub_resource type="ProxyTexture" id=5]
+
 [sub_resource type="ShaderMaterial" id=2]
 shader = ExtResource( 5 )
 shader_param/enabled = true
 shader_param/block_size = 32
 shader_param/useSalt = true
-shader_param/salt = ExtResource( 3 )
+shader_param/salt = SubResource( 5 )
 
 [sub_resource type="ViewportTexture" id=3]
 viewport_path = NodePath("Viewport")
@@ -92,14 +94,14 @@ __meta__ = {
 
 [node name="GlassBlock" type="Sprite" parent="."]
 material = SubResource( 2 )
-position = Vector2( 784.527, 544.108 )
+position = Vector2( 767.343, 511.173 )
 texture = ExtResource( 7 )
 
 [node name="PassPhrase" type="LineEdit" parent="."]
 margin_left = 58.0
-margin_top = 170.119
+margin_top = 112.84
 margin_right = 259.0
-margin_bottom = 194.119
+margin_bottom = 136.84
 text = "abc"
 __meta__ = {
 "_edit_use_anchors_": false
