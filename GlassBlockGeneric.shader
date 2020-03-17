@@ -42,7 +42,7 @@ void fragment(){
 		//		 THIS BREAKS THE ENUMERATION AND DE-MASKING WILL FAIL.  FIXME
 		
 		//Which pixel are we on in the salt texture?  Presumes a sample on the first row only.
-		int px = (pos.y + pos.x * textureSize(TEXTURE,0).x) % textureSize(salt,0).x;
+		int px = (pos.x + pos.y * textureSize(TEXTURE,0).x) % textureSize(salt,0).x;
 		vec4 saltval = texture(salt, vec2(ivec2(px,0)) );
 		
 		if (saltval.r >= 0.9)  //hflip
