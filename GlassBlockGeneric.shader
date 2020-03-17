@@ -47,6 +47,14 @@ void fragment(){
 //		int px = (pos.x + pos.y * textureSize(TEXTURE,0).x) % textureSize(salt,0).x;
 		vec4 saltval = texture(salt, vec2(float(px) / float(textureSize(salt,0).x) + 0.000001, 0) );
 		COLOR.rgb = vec3(0);
+
+		if (saltval.b >= 0.5) 
+		{ //swizzle
+			fpos.xy = fpos.yx;
+			uv = vec2(pos*block_size) + fpos;
+			uv /= vec2(textureSize(TEXTURE,0));
+//			COLOR.b = 1.0;
+		}
 		if (saltval.r >= 0.5)  //hflip
 		{
 			//Subtract specified pixel offset from the block origin + blocksize
@@ -58,12 +66,6 @@ void fragment(){
 			uv.y = vec2(pos*block_size + block_size).y - fpos.y;
 			uv.y /= float(textureSize(TEXTURE,0).y);
 //			COLOR.g = 1.0;
-		}
-		if (saltval.b >= 0.5) { //swizzle
-			fpos.xy = fpos.yx;
-			uv = vec2(pos*block_size) + fpos;
-			uv /= vec2(textureSize(TEXTURE,0));
-//			COLOR.b = 1.0;
 		}
 		
 	}

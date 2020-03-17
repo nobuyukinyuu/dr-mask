@@ -94,7 +94,7 @@ __meta__ = {
 
 [node name="GlassBlock" type="Sprite" parent="."]
 material = SubResource( 2 )
-position = Vector2( 820.343, 569.173 )
+position = Vector2( 815.911, 561.416 )
 texture = ExtResource( 7 )
 
 [node name="PassPhrase" type="LineEdit" parent="."]
