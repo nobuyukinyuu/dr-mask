@@ -48,6 +48,5 @@ ui_zoom_reset={
 
 [rendering]
 
-quality/2d/use_pixel_snap=true
 environment/default_clear_color=Color( 0.0941176, 0.0941176, 0.12549, 1 )
 environment/default_environment="res://default_env.tres"

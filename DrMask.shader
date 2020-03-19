@@ -7,7 +7,7 @@ void fragment() {
 	vec2 texSz = vec2(654, 1155);
 
 	vec4 c = texture(TEXTURE, UV);
-	vec4 bg = texture(SCREEN_TEXTURE, SCREEN_UV);
+	vec4 bg = textureLod(SCREEN_TEXTURE, SCREEN_UV, 0);
 
 
 	//Convert UV to position on texture

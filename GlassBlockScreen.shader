@@ -6,13 +6,14 @@ uniform sampler2D salt;
 
 
 void fragment(){
+	vec2 ScreenUV = (SCREEN_UV);
 	
-	ivec2 pos = ivec2( vec2(textureSize(SCREEN_TEXTURE, 0)) * SCREEN_UV / float(block_size) );
+	ivec2 pos = ivec2( vec2(textureSize(SCREEN_TEXTURE, 0)) * ScreenUV / float(block_size) );
 	ivec2 n = pos;
 	
 	//Setup the glass block masking.
-	vec2 uv = SCREEN_UV;  
-	vec2 fpos = (vec2(textureSize(SCREEN_TEXTURE, 0)) * SCREEN_UV);  // Pixel position
+	vec2 uv = ScreenUV;  
+	vec2 fpos = (vec2(textureSize(SCREEN_TEXTURE, 0)) * ScreenUV);  // Pixel position
 	fpos -= vec2(pos * block_size);  //now it's the offset from block origin.
 
 	if (useSalt==false) //Generic glass block texture.
@@ -42,7 +43,7 @@ void fragment(){
 		//		 THIS BREAKS THE ENUMERATION AND DE-MASKING WILL FAIL.  FIXME
 		
 		//Which pixel are we on in the salt texture?  Presumes a sample on the first row only.
-		vec2 pos2 = floor(vec2(textureSize(SCREEN_TEXTURE,0)) * SCREEN_UV / float(block_size));
+		vec2 pos2 = floor(vec2(textureSize(SCREEN_TEXTURE,0)) * ScreenUV / float(block_size));
 		int px = int(pos2.y* float(textureSize(SCREEN_TEXTURE,0).x / block_size) + pos2.x)  % textureSize(salt,0).x;
 //		int px = (pos.x + pos.y * textureSize(SCREEN_TEXTURE,0).x) % textureSize(salt,0).x;
 		vec4 saltval = texture(salt, vec2(float(px) / float(textureSize(salt,0).x) + 0.000001, 0) );
@@ -70,9 +71,11 @@ void fragment(){
 		
 	}
 		
-	vec4 c = texture(SCREEN_TEXTURE, uv);
+	vec4 c = textureLod(SCREEN_TEXTURE, uv, 0);
 		
 	COLOR.rgb = c.rgb;
-	if (!enabled || block_size==0)  COLOR = texture(SCREEN_TEXTURE, SCREEN_UV);
+	if (!enabled || block_size==0)  COLOR = textureLod(SCREEN_TEXTURE, ScreenUV, 0);
 	
 }
+
+

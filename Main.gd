@@ -23,8 +23,9 @@ func _ready():
 
 
 func _on_PassPhrase_text_changed(new_text):
-	$PassView/Sprite.update()
-	pass # Replace with function body.
+	$PassView/Sprite.update()  #Update the salt texture.
+
+	$View/GlassBlock.useSalt = not $VBox/PassPhrase.text.empty()
 
 
 #File menu
