@@ -18,10 +18,12 @@ func _ready():
 		var s = String(z*100).pad_decimals(1) + "%"
 		$Zoom/Menu.add_item(s,i)
 	$Zoom/Menu.rect_size = Vector2.ONE #Force a resize event before first popup.
+	yield(get_tree(),"idle_frame")
+	$Scroll/C.zoom = 1
 
 
 func _on_PassPhrase_text_changed(new_text):
-	$Viewport/Sprite.update()
+	$PassView/Sprite.update()
 	pass # Replace with function body.
 
 
@@ -36,3 +38,7 @@ func _on_Zoom_pressed():
 func _on_Zoom_Menu_index_pressed(index):
 	$Scroll/C.zoom = $Zoom.get_meta(String(index))
 	pass # Replace with function body.
+
+
+func _on_SpinGlass_value_changed(value):
+	$View/GlassBlock.block_size = value
