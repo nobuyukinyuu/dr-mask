@@ -1,43 +1,74 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://DrMask.shader" type="Shader" id=1]
 [ext_resource path="res://testImages/Illustration3.png" type="Texture" id=2]
-[ext_resource path="res://testImages/salt.png" type="Texture" id=3]
+[ext_resource path="res://ui/checkerboard.png" type="Texture" id=3]
 [ext_resource path="res://testImages/Illustration3b.png" type="Texture" id=4]
 [ext_resource path="res://GlassBlockGeneric.shader" type="Shader" id=5]
 [ext_resource path="res://Main.gd" type="Script" id=6]
-[ext_resource path="res://align.png" type="Texture" id=7]
-[ext_resource path="res://testImages/align.png" type="Texture" id=8]
+[ext_resource path="res://testImages/serril_face.png" type="Texture" id=7]
+[ext_resource path="res://ui/icon_GUI_scroll_arrow_right.svg" type="Texture" id=8]
+[ext_resource path="res://ui/icon_save.svg" type="Texture" id=9]
+[ext_resource path="res://icon.png" type="Texture" id=10]
+[ext_resource path="res://ui/icon_zoom.svg" type="Texture" id=11]
+[ext_resource path="res://ui/ScrollContainerContent.gd" type="Script" id=12]
+[ext_resource path="res://ui/PopupMenu.stylebox" type="StyleBox" id=13]
+[ext_resource path="res://ui/icon_duplicate.svg" type="Texture" id=14]
+[ext_resource path="res://ui/icon_input_data.svg" type="Texture" id=15]
 
-[sub_resource type="ShaderMaterial" id=1]
-shader = ExtResource( 1 )
-shader_param/unmask = null
-shader_param/block_size = 4
-shader_param/salt = ExtResource( 3 )
+[sub_resource type="ProxyTexture" id=1]
 
 [sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 1 )
+shader_param/unmask = null
+shader_param/block_size = 8
+shader_param/salt = SubResource( 1 )
+
+[sub_resource type="ProxyTexture" id=3]
+
+[sub_resource type="ShaderMaterial" id=4]
 shader = ExtResource( 5 )
 shader_param/enabled = true
-shader_param/block_size = 48
+shader_param/block_size = 40
 shader_param/useSalt = true
-shader_param/salt = ExtResource( 8 )
+shader_param/salt = SubResource( 3 )
 
-[sub_resource type="ViewportTexture" id=3]
+[sub_resource type="StyleBoxLine" id=8]
+color = Color( 0.176471, 0.32549, 0.678431, 1 )
+vertical = true
+
+[sub_resource type="StyleBoxLine" id=9]
+color = Color( 0.176471, 0.32549, 0.678431, 1 )
+thickness = 3
+vertical = true
+
+[sub_resource type="StyleBoxEmpty" id=10]
+
+[sub_resource type="InputEventAction" id=11]
+action = "ui_alt"
+
+[sub_resource type="ShortCut" id=12]
+shortcut = SubResource( 11 )
+
+[sub_resource type="StyleBoxFlat" id=13]
+bg_color = Color( 0.6, 0.6, 0.6, 0.0941176 )
+
+[sub_resource type="ViewportTexture" id=5]
 viewport_path = NodePath("Viewport")
 
 [sub_resource type="ProxyTexture" id=6]
 
-[sub_resource type="GDScript" id=4]
+[sub_resource type="GDScript" id=7]
 script/source = "extends Sprite
 
 func _draw():
 	#Split the pass phrase into requisite components.
 	#Only the 6LSB are used per character, for now.
 	
-	$\"..\".size.x = max(2, len(owner.get_node(\"PassPhrase\").text) * 2)
+	$\"..\".size.x = max(2, len(owner.get_node(\"VBox/PassPhrase\").text) * 2)
 	
 	var i = 1
-	for c in owner.get_node(\"PassPhrase\").text:
+	for c in owner.get_node(\"VBox/PassPhrase\").text:
 		var cols = get_char_colors(c)
 		var pos = Vector2(i, 0)
 
@@ -66,6 +97,40 @@ func get_char_colors(c):
 	return output
 "
 
+[sub_resource type="GDScript" id=15]
+script/source = "extends ScrollContainer
+
+
+
+func _input(event):
+	if event is InputEventMouseMotion:
+#		print(event)
+		if Input.is_mouse_button_pressed(BUTTON_MIDDLE):
+			scroll_horizontal -= event.relative.x
+			scroll_vertical -= event.relative.y
+			
+
+func _gui_input(event):
+	if event is InputEventMouseButton and event.pressed:
+		match event.button_index:
+			BUTTON_WHEEL_DOWN:
+				$C.zoom /= sqrt(2)
+			BUTTON_WHEEL_UP:
+				$C.zoom *= sqrt(2)
+			_:
+				pass
+			#Scroll wheel.  Consume the event.
+
+
+		get_tree().set_input_as_handled()
+
+#		scroll_horizontal_enabled = false
+#		scroll_vertical_enabled = false
+#		yield(get_tree(),\"idle_frame\")
+#		scroll_horizontal_enabled = true
+#		scroll_vertical_enabled = true
+"
+
 [node name="Control" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -76,13 +141,13 @@ __meta__ = {
 }
 
 [node name="Base" type="Sprite" parent="."]
-position = Vector2( 223.926, 617.964 )
+position = Vector2( -245.483, 639.061 )
 scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 4 )
 
 [node name="Overlay" type="Sprite" parent="."]
-material = SubResource( 1 )
-position = Vector2( 223.926, 617.964 )
+material = SubResource( 2 )
+position = Vector2( -245.483, 639.061 )
 scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 2 )
 
@@ -93,29 +158,201 @@ __meta__ = {
 }
 
 [node name="GlassBlock" type="Sprite" parent="."]
-material = SubResource( 2 )
-position = Vector2( 815.911, 561.416 )
+visible = false
+material = SubResource( 4 )
+position = Vector2( 1248.4, 568.449 )
 texture = ExtResource( 7 )
 
-[node name="PassPhrase" type="LineEdit" parent="."]
-margin_left = 58.0
-margin_top = 112.84
-margin_right = 259.0
-margin_bottom = 136.84
-text = "01234567"
+[node name="VBox" type="VBoxContainer" parent="."]
+anchor_bottom = 1.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 264.0
+margin_bottom = -16.0
+custom_constants/separation = 10
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="btnFile" type="Button" parent="VBox"]
+margin_right = 248.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 96, 24 )
+custom_styles/hover = SubResource( 8 )
+custom_styles/pressed = SubResource( 9 )
+custom_styles/normal = SubResource( 10 )
+shortcut = SubResource( 12 )
+text = "  File"
+icon = ExtResource( 8 )
+flat = true
+align = 0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TextureRect" type="TextureRect" parent="PassPhrase"]
-margin_left = 2.0
-margin_top = 40.0
-margin_right = 902.0
-margin_bottom = 104.0
-texture = SubResource( 3 )
+[node name="PopupMenu" type="PopupMenu" parent="VBox/btnFile"]
+anchor_top = 0.0416667
+anchor_bottom = 0.0416667
+margin_left = -198.0
+margin_top = 221.0
+margin_right = -48.0
+margin_bottom = 405.0
+custom_styles/hover = SubResource( 13 )
+custom_styles/panel = ExtResource( 13 )
+custom_constants/vseparation = 12
+items = [ "Source Image....", null, 0, false, false, 0, 0, null, "", false, "Overlay (diff/final)...", null, 0, false, false, 1, 0, null, "", false, "", null, 0, false, false, 2, 0, null, "", true, "Save As...", ExtResource( 9 ), 0, false, false, 3, 0, null, "", false ]
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Label" type="Label" parent="VBox"]
+margin_top = 34.0
+margin_right = 248.0
+margin_bottom = 48.0
+text = "Passphrase:"
+
+[node name="PassPhrase" type="LineEdit" parent="VBox"]
+margin_top = 58.0
+margin_right = 248.0
+margin_bottom = 84.0
+text = "01234567"
+clear_button_enabled = true
+placeholder_text = "(See help for allowed chars)"
+caret_blink = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="VBox"]
+modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
+margin_top = 94.0
+margin_right = 248.0
+margin_bottom = 96.0
+rect_min_size = Vector2( 0, 2 )
+texture = SubResource( 5 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="VBox"]
+margin_top = 106.0
+margin_right = 248.0
+margin_bottom = 120.0
+text = "Invert block size:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SpinBox" type="SpinBox" parent="VBox"]
+margin_top = 130.0
+margin_right = 248.0
+margin_bottom = 154.0
+page = 8.0
+allow_greater = true
+suffix = "px"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label3" type="Label" parent="VBox"]
+margin_top = 164.0
+margin_right = 248.0
+margin_bottom = 178.0
+text = "Glass block size (pass 1):"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SpinBox2" type="SpinBox" parent="VBox"]
+margin_top = 188.0
+margin_right = 248.0
+margin_bottom = 212.0
+page = 8.0
+allow_greater = true
+suffix = "px"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label4" type="Label" parent="VBox"]
+margin_top = 222.0
+margin_right = 248.0
+margin_bottom = 236.0
+text = "Glass block size (pass 2):"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SpinBox3" type="SpinBox" parent="VBox"]
+margin_top = 246.0
+margin_right = 248.0
+margin_bottom = 270.0
+max_value = 256.0
+page = 8.0
+allow_greater = true
+suffix = "px"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label5" type="Label" parent="VBox"]
+margin_top = 280.0
+margin_right = 248.0
+margin_bottom = 294.0
+text = "Automatic Configure:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Auto" type="HBoxContainer" parent="VBox"]
+margin_top = 304.0
+margin_right = 248.0
+margin_bottom = 328.0
+__meta__ = {
+"_edit_group_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Txt" type="LineEdit" parent="VBox/Auto"]
+margin_right = 184.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="btnInput" type="Button" parent="VBox/Auto"]
+margin_left = 188.0
+margin_right = 216.0
+margin_bottom = 24.0
+icon = ExtResource( 15 )
+
+[node name="btnCopy" type="Button" parent="VBox/Auto"]
+margin_left = 220.0
+margin_right = 248.0
+margin_bottom = 24.0
+icon = ExtResource( 14 )
+
+[node name="HBox" type="HBoxContainer" parent="VBox"]
+margin_top = 338.0
+margin_right = 248.0
+margin_bottom = 370.0
+rect_min_size = Vector2( 0, 32 )
+alignment = 1
+
+[node name="Encode" type="Button" parent="VBox/HBox"]
+margin_right = 122.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Encode"
+
+[node name="Decode" type="Button" parent="VBox/HBox"]
+margin_left = 126.0
+margin_right = 248.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Decode"
 
 [node name="Viewport" type="Viewport" parent="."]
 size = Vector2( 256, 2 )
@@ -127,5 +364,72 @@ render_target_v_flip = true
 
 [node name="Sprite" type="Sprite" parent="Viewport"]
 texture = SubResource( 6 )
-script = SubResource( 4 )
-[connection signal="text_changed" from="PassPhrase" to="." method="_on_PassPhrase_text_changed"]
+script = SubResource( 7 )
+
+[node name="BG" type="TextureRect" parent="."]
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 280.0
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 2
+__meta__ = {
+"_edit_group_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Scroll" type="ScrollContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 280.0
+script = SubResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="C" type="Control" parent="Scroll"]
+margin_right = 744.0
+margin_bottom = 768.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 12 )
+
+[node name="Preview" type="TextureRect" parent="Scroll/C"]
+margin_right = 225.0
+margin_bottom = 225.0
+texture = ExtResource( 10 )
+stretch_mode = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Zoom" type="ToolButton" parent="."]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -96.0
+margin_top = -32.0
+margin_right = -8.0
+text = "100%"
+icon = ExtResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Menu" type="PopupMenu" parent="Zoom"]
+margin_left = -8.0
+margin_top = -280.0
+margin_right = 76.0
+margin_bottom = -28.0
+custom_styles/panel = ExtResource( 13 )
+custom_constants/vseparation = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="VBox/btnFile" to="." method="_on_Button_pressed"]
+[connection signal="text_changed" from="VBox/PassPhrase" to="." method="_on_PassPhrase_text_changed"]
+[connection signal="resized" from="Scroll" to="Scroll/C" method="_on_Scroll_resized"]
+[connection signal="pressed" from="Zoom" to="." method="_on_Zoom_pressed"]
+[connection signal="index_pressed" from="Zoom/Menu" to="." method="_on_Zoom_Menu_index_pressed"]

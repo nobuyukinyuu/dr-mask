@@ -11,7 +11,7 @@ void fragment() {
 
 
 	//Convert UV to position on texture
-	vec2 uv2 = texSz * UV; //UV position, in pixels, of sampled tex.
+	vec2 uv2 = vec2(textureSize(TEXTURE,0)) * UV; //UV position, in pixels, of sampled tex.
 
 	vec2 saltRatio = vec2(textureSize(TEXTURE, 0)) / vec2(textureSize(salt, 0));
 	vec2 saltpos = saltRatio * UV;  // Un modulus'd position to sample from the salt, in px.
@@ -32,7 +32,7 @@ void fragment() {
 
 	n.x = n.x % 2;
 	n.y = n.y % 2;
-//	if ((n.x ^ n.y) > 0)  diff.rgb = 1.0-diff.bgr;
+	if ((n.x ^ n.y) > 0)  diff.rgb = 1.0-diff.bgr;
  	
 
 	COLOR = diff;
