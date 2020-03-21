@@ -17,11 +17,18 @@ _global_script_class_icons={
 
 config/name="DrMask"
 run/main_scene="res://Main.tscn"
+boot_splash/image="res://icon.png"
+boot_splash/fullsize=false
 config/icon="res://icon.png"
+
+[autoload]
+
+global="*res://!global.gd"
 
 [display]
 
 window/size/height=768
+window/energy_saving/keep_screen_on=false
 
 [input]
 

@@ -1,12 +1,11 @@
-[gd_scene load_steps=37 format=2]
+[gd_scene load_steps=41 format=2]
 
 [ext_resource path="res://DrMask.shader" type="Shader" id=1]
-[ext_resource path="res://testImages/Illustration3.png" type="Texture" id=2]
+[ext_resource path="res://InvertBlockScreen.shader" type="Shader" id=2]
 [ext_resource path="res://ui/checkerboard.png" type="Texture" id=3]
-[ext_resource path="res://testImages/Illustration3b.png" type="Texture" id=4]
-[ext_resource path="res://GlassBlockGeneric.shader" type="Shader" id=5]
+[ext_resource path="res://DecoderViewport.gd" type="Script" id=4]
 [ext_resource path="res://Main.gd" type="Script" id=6]
-[ext_resource path="res://sample.png" type="Texture" id=7]
+[ext_resource path="res://DestTex.gd" type="Script" id=7]
 [ext_resource path="res://ui/icon_GUI_scroll_arrow_right.svg" type="Texture" id=8]
 [ext_resource path="res://ui/icon_save.svg" type="Texture" id=9]
 [ext_resource path="res://GlassBlockScreen.shader" type="Shader" id=10]
@@ -17,51 +16,35 @@
 [ext_resource path="res://ui/icon_input_data.svg" type="Texture" id=15]
 [ext_resource path="res://ui/GlassBlock.gd" type="Script" id=16]
 [ext_resource path="res://ui/CompositeView.gd" type="Script" id=17]
-[ext_resource path="res://testImages/serril_face.png" type="Texture" id=18]
+[ext_resource path="res://ui/ScrollContainer.gd" type="Script" id=19]
+[ext_resource path="res://ui/nothing.png" type="Texture" id=20]
+[ext_resource path="res://ui/TexPreviewThumb.gd" type="Script" id=21]
+[ext_resource path="res://testImages/serril.png" type="Texture" id=22]
+[ext_resource path="res://BitCrush.shader" type="Shader" id=23]
 
-[sub_resource type="ProxyTexture" id=1]
-
-[sub_resource type="ShaderMaterial" id=2]
-shader = ExtResource( 1 )
-shader_param/unmask = null
-shader_param/block_size = 8
-shader_param/salt = SubResource( 1 )
-
-[sub_resource type="ProxyTexture" id=3]
-
-[sub_resource type="ShaderMaterial" id=4]
-shader = ExtResource( 5 )
-shader_param/enabled = true
-shader_param/block_size = 40
-shader_param/useSalt = true
-shader_param/salt = SubResource( 3 )
-
-[sub_resource type="StyleBoxLine" id=8]
+[sub_resource type="StyleBoxLine" id=5]
 color = Color( 0.176471, 0.32549, 0.678431, 1 )
 vertical = true
 
-[sub_resource type="StyleBoxLine" id=9]
+[sub_resource type="StyleBoxLine" id=6]
 color = Color( 0.176471, 0.32549, 0.678431, 1 )
 thickness = 3
 vertical = true
 
-[sub_resource type="StyleBoxEmpty" id=10]
+[sub_resource type="StyleBoxEmpty" id=7]
 
-[sub_resource type="InputEventAction" id=11]
+[sub_resource type="InputEventAction" id=8]
 action = "ui_alt"
 
-[sub_resource type="ShortCut" id=12]
-shortcut = SubResource( 11 )
+[sub_resource type="ShortCut" id=9]
+shortcut = SubResource( 8 )
 
-[sub_resource type="StyleBoxFlat" id=13]
-bg_color = Color( 0.6, 0.6, 0.6, 0.0941176 )
-
-[sub_resource type="ViewportTexture" id=5]
+[sub_resource type="ViewportTexture" id=10]
 viewport_path = NodePath("PassView")
 
-[sub_resource type="ProxyTexture" id=6]
+[sub_resource type="ProxyTexture" id=11]
 
-[sub_resource type="GDScript" id=7]
+[sub_resource type="GDScript" id=12]
 script/source = "extends Sprite
 
 func _draw():
@@ -100,63 +83,65 @@ func get_char_colors(c):
 	return output
 "
 
-[sub_resource type="GDScript" id=15]
-script/source = "extends ScrollContainer
-
-
-
-func _input(event):
-	if event is InputEventMouseMotion:
-#		print(event)
-		if Input.is_mouse_button_pressed(BUTTON_LEFT):
-			scroll_horizontal -= event.relative.x
-			scroll_vertical -= event.relative.y
-		elif Input.is_mouse_button_pressed(BUTTON_MIDDLE):
-			scroll_horizontal -= event.relative.x
-			scroll_vertical -= event.relative.y
-			
-
-func _gui_input(event):
-	if event is InputEventMouseButton and event.pressed:
-		match event.button_index:
-			BUTTON_WHEEL_DOWN:
-				$C.zoom /= sqrt(2)
-			BUTTON_WHEEL_UP:
-				$C.zoom *= sqrt(2)
-			_:
-				pass
-			#Scroll wheel.  Consume the event.
-
-
-		get_tree().set_input_as_handled()
-
-#		scroll_horizontal_enabled = false
-#		scroll_vertical_enabled = false
-#		yield(get_tree(),\"idle_frame\")
-#		scroll_horizontal_enabled = true
-#		scroll_vertical_enabled = true
-"
-
-[sub_resource type="ViewportTexture" id=16]
+[sub_resource type="ViewportTexture" id=13]
 viewport_path = NodePath("View")
 
-[sub_resource type="StyleBoxFlat" id=18]
+[sub_resource type="StyleBoxFlat" id=14]
 bg_color = Color( 0, 0, 0, 0.627451 )
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="ViewportTexture" id=19]
+[sub_resource type="ShaderMaterial" id=17]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/unmask = true
+shader_param/block_size = 0
+
+[sub_resource type="ViewportTexture" id=22]
+viewport_path = NodePath("Decoder")
+
+[sub_resource type="ShaderMaterial" id=23]
+shader = ExtResource( 2 )
+shader_param/block_size = null
+
+[sub_resource type="ViewportTexture" id=15]
 viewport_path = NodePath("PassView")
 
-[sub_resource type="ShaderMaterial" id=17]
+[sub_resource type="ShaderMaterial" id=16]
 resource_local_to_scene = true
 shader = ExtResource( 10 )
 shader_param/enabled = true
 shader_param/block_size = 0
-shader_param/useSalt = true
-shader_param/salt = SubResource( 19 )
+shader_param/useSalt = false
+shader_param/salt = SubResource( 15 )
+
+[sub_resource type="ShaderMaterial" id=20]
+resource_local_to_scene = true
+shader = ExtResource( 10 )
+shader_param/enabled = true
+shader_param/block_size = 0
+shader_param/useSalt = false
+shader_param/salt = SubResource( 15 )
+
+[sub_resource type="ShaderMaterial" id=21]
+shader = ExtResource( 2 )
+shader_param/block_size = null
+
+[sub_resource type="ShaderMaterial" id=19]
+shader = ExtResource( 23 )
+shader_param/bits = 5
+
+[sub_resource type="GDScript" id=24]
+script/source = "extends Label
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	text = String(OS.low_processor_usage_mode)
+	pass
+"
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
@@ -167,71 +152,29 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Base" type="Sprite" parent="."]
-position = Vector2( -245.483, 639.061 )
-scale = Vector2( 0.5, 0.5 )
-texture = ExtResource( 4 )
-
-[node name="Overlay" type="Sprite" parent="."]
-material = SubResource( 2 )
-position = Vector2( -245.483, 639.061 )
-scale = Vector2( 0.5, 0.5 )
-texture = ExtResource( 2 )
-
-[node name="BackBufferCopy" type="BackBufferCopy" parent="."]
-copy_mode = 2
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="GlassBlock" type="Sprite" parent="."]
-visible = false
-material = SubResource( 4 )
-position = Vector2( 1248.4, 568.449 )
-texture = ExtResource( 18 )
-
 [node name="VBox" type="VBoxContainer" parent="."]
 anchor_bottom = 1.0
 margin_left = 16.0
-margin_top = 16.0
+margin_top = 8.0
 margin_right = 264.0
-margin_bottom = -16.0
+margin_bottom = -24.0
 custom_constants/separation = 10
 __meta__ = {
-"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
-[node name="btnFile" type="Button" parent="VBox"]
+[node name="btnFile" type="MenuButton" parent="VBox"]
 margin_right = 248.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 96, 24 )
-custom_styles/hover = SubResource( 8 )
-custom_styles/pressed = SubResource( 9 )
-custom_styles/normal = SubResource( 10 )
-shortcut = SubResource( 12 )
+custom_styles/hover = SubResource( 5 )
+custom_styles/pressed = SubResource( 6 )
+custom_styles/normal = SubResource( 7 )
+shortcut = SubResource( 9 )
 text = "  File"
 icon = ExtResource( 8 )
-flat = true
 align = 0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="PopupMenu" type="PopupMenu" parent="VBox/btnFile"]
-anchor_top = 0.0416667
-anchor_bottom = 0.0416667
-margin_left = -198.0
-margin_top = 221.0
-margin_right = -48.0
-margin_bottom = 405.0
-custom_styles/hover = SubResource( 13 )
-custom_styles/panel = ExtResource( 13 )
-custom_constants/vseparation = 12
-items = [ "Source Image....", null, 0, false, false, 0, 0, null, "", false, "Overlay (diff/final)...", null, 0, false, false, 1, 0, null, "", false, "", null, 0, false, false, 2, 0, null, "", true, "Save As...", ExtResource( 9 ), 0, false, false, 3, 0, null, "", false ]
-__meta__ = {
-"_edit_use_anchors_": false
-}
+items = [ "Source Image....", null, 0, false, false, 0, 0, null, "", false, "Overlay (diff/final)...", null, 0, false, false, 1, 0, null, "", false, "", null, 0, false, false, 2, 0, null, "", true, "Save As...", ExtResource( 9 ), 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, 4, 0, null, "", true, "Clear Overlay", null, 0, false, false, 5, 0, null, "", false ]
 
 [node name="Label" type="Label" parent="VBox"]
 margin_top = 34.0
@@ -242,7 +185,7 @@ text = "Passphrase:"
 [node name="PassPhrase" type="LineEdit" parent="VBox"]
 margin_top = 58.0
 margin_right = 248.0
-margin_bottom = 84.0
+margin_bottom = 82.0
 clear_button_enabled = true
 placeholder_text = "(Optional.  Alphanumeric chars only)"
 placeholder_alpha = 0.3
@@ -253,29 +196,29 @@ __meta__ = {
 
 [node name="TextureRect" type="TextureRect" parent="VBox"]
 modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-margin_top = 94.0
+margin_top = 92.0
 margin_right = 248.0
-margin_bottom = 96.0
+margin_bottom = 94.0
 rect_min_size = Vector2( 0, 2 )
-texture = SubResource( 5 )
+texture = SubResource( 10 )
 expand = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Label2" type="Label" parent="VBox"]
-margin_top = 106.0
+margin_top = 104.0
 margin_right = 248.0
-margin_bottom = 120.0
+margin_bottom = 118.0
 text = "Invert block size:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="SpinBox" type="SpinBox" parent="VBox"]
-margin_top = 130.0
+[node name="SpinInvert" type="SpinBox" parent="VBox"]
+margin_top = 128.0
 margin_right = 248.0
-margin_bottom = 154.0
+margin_bottom = 152.0
 page = 8.0
 allow_greater = true
 suffix = "px"
@@ -284,18 +227,18 @@ __meta__ = {
 }
 
 [node name="Label3" type="Label" parent="VBox"]
-margin_top = 164.0
+margin_top = 162.0
 margin_right = 248.0
-margin_bottom = 178.0
+margin_bottom = 176.0
 text = "Glass block size (pass 1):"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="SpinGlass" type="SpinBox" parent="VBox"]
-margin_top = 188.0
+margin_top = 186.0
 margin_right = 248.0
-margin_bottom = 212.0
+margin_bottom = 210.0
 max_value = 256.0
 page = 8.0
 allow_greater = true
@@ -305,18 +248,18 @@ __meta__ = {
 }
 
 [node name="Label4" type="Label" parent="VBox"]
-margin_top = 222.0
+margin_top = 220.0
 margin_right = 248.0
-margin_bottom = 236.0
+margin_bottom = 234.0
 text = "Glass block size (pass 2):"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="SpinGlass2" type="SpinBox" parent="VBox"]
-margin_top = 246.0
+margin_top = 244.0
 margin_right = 248.0
-margin_bottom = 270.0
+margin_bottom = 268.0
 max_value = 256.0
 page = 8.0
 allow_greater = true
@@ -326,18 +269,18 @@ __meta__ = {
 }
 
 [node name="Label5" type="Label" parent="VBox"]
-margin_top = 280.0
+margin_top = 278.0
 margin_right = 248.0
-margin_bottom = 294.0
+margin_bottom = 292.0
 text = "Automatic Configure:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Auto" type="HBoxContainer" parent="VBox"]
-margin_top = 304.0
+margin_top = 302.0
 margin_right = 248.0
-margin_bottom = 328.0
+margin_bottom = 326.0
 __meta__ = {
 "_edit_group_": true,
 "_edit_use_anchors_": false
@@ -388,11 +331,85 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Decode"
 
-[node name="CheckButton" type="CheckButton" parent="VBox"]
-margin_top = 338.0
+[node name="chkEncode" type="CheckButton" parent="VBox"]
+margin_top = 336.0
 margin_right = 248.0
-margin_bottom = 378.0
+margin_bottom = 376.0
 text = "Encode instead of decode"
+
+[node name="Label6" type="Label" parent="VBox"]
+margin_top = 386.0
+margin_right = 248.0
+margin_bottom = 400.0
+text = "Source Image:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SrcTex" type="TextureRect" parent="VBox"]
+margin_top = 410.0
+margin_right = 248.0
+margin_bottom = 538.0
+rect_min_size = Vector2( 0, 128 )
+mouse_filter = 0
+texture = ExtResource( 20 )
+expand = true
+stretch_mode = 6
+script = ExtResource( 21 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="VBox/SrcTex"]
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+custom_styles/panel = ExtResource( 13 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Spacer" type="Control" parent="VBox"]
+margin_top = 548.0
+margin_right = 248.0
+margin_bottom = 556.0
+rect_min_size = Vector2( 0, 8 )
+
+[node name="Label7" type="Label" parent="VBox"]
+margin_top = 566.0
+margin_right = 248.0
+margin_bottom = 580.0
+text = "Diff Image:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DestTex" type="TextureRect" parent="VBox"]
+margin_top = 590.0
+margin_right = 248.0
+margin_bottom = 718.0
+rect_min_size = Vector2( 0, 128 )
+mouse_filter = 0
+texture = ExtResource( 20 )
+expand = true
+stretch_mode = 6
+script = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="VBox/DestTex"]
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+custom_styles/panel = ExtResource( 13 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
 
 [node name="PassView" type="Viewport" parent="."]
 size = Vector2( 256, 2 )
@@ -403,8 +420,8 @@ usage = 1
 render_target_v_flip = true
 
 [node name="Sprite" type="Sprite" parent="PassView"]
-texture = SubResource( 6 )
-script = SubResource( 7 )
+texture = SubResource( 11 )
+script = SubResource( 12 )
 
 [node name="BG" type="TextureRect" parent="."]
 show_behind_parent = true
@@ -423,7 +440,7 @@ __meta__ = {
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 280.0
-script = SubResource( 15 )
+script = ExtResource( 19 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -431,16 +448,30 @@ __meta__ = {
 [node name="C" type="Control" parent="Scroll"]
 margin_right = 744.0
 margin_bottom = 768.0
+mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 12 )
 
 [node name="Preview" type="TextureRect" parent="Scroll/C"]
-margin_right = 225.0
-margin_bottom = 225.0
-texture = SubResource( 16 )
-stretch_mode = 4
+margin_left = 48.0
+margin_top = 40.0
+margin_right = 80.0
+margin_bottom = 72.0
+texture = SubResource( 13 )
+stretch_mode = 3
 __meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ReferenceRect" type="ReferenceRect" parent="Scroll/C/Preview"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+editor_only = false
+__meta__ = {
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -476,7 +507,7 @@ show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-custom_styles/panel = SubResource( 18 )
+custom_styles/panel = SubResource( 14 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -494,12 +525,27 @@ gui_snap_controls_to_pixels = false
 script = ExtResource( 17 )
 
 [node name="Src" type="Sprite" parent="View"]
-texture = ExtResource( 7 )
 centered = false
-region_rect = Rect2( 0, 0, 256, 256 )
 
 [node name="Dest" type="Sprite" parent="View"]
+material = SubResource( 17 )
+texture = SubResource( 22 )
 centered = false
+
+[node name="BackBufferCopy3" type="BackBufferCopy" parent="View"]
+copy_mode = 2
+
+[node name="InvertBlock" type="ColorRect" parent="View" groups=[
+"GlassBlock",
+]]
+visible = false
+material = SubResource( 23 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 32.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="BackBufferCopy" type="BackBufferCopy" parent="View"]
 copy_mode = 2
@@ -507,13 +553,139 @@ copy_mode = 2
 [node name="GlassBlock" type="ColorRect" parent="View" groups=[
 "GlassBlock",
 ]]
-material = SubResource( 17 )
+visible = false
+material = SubResource( 16 )
 margin_right = 32.0
 margin_bottom = 32.0
 script = ExtResource( 16 )
-[connection signal="pressed" from="VBox/btnFile" to="." method="_on_Button_pressed"]
+
+[node name="BackBufferCopy2" type="BackBufferCopy" parent="View"]
+copy_mode = 2
+
+[node name="GlassBlock2" type="ColorRect" parent="View" groups=[
+"GlassBlock",
+]]
+visible = false
+material = SubResource( 20 )
+margin_right = 32.0
+margin_bottom = 32.0
+script = ExtResource( 16 )
+
+[node name="Decoder" type="Viewport" parent="."]
+own_world = true
+transparent_bg = true
+hdr = false
+disable_3d = true
+keep_3d_linear = true
+usage = 0
+render_target_v_flip = true
+render_target_update_mode = 3
+gui_snap_controls_to_pixels = false
+script = ExtResource( 4 )
+
+[node name="Diff" type="Sprite" parent="Decoder"]
+centered = false
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Decoder"]
+copy_mode = 2
+
+[node name="GlassBlock2" type="ColorRect" parent="Decoder" groups=[
+"GlassBlock",
+]]
+visible = false
+material = SubResource( 20 )
+margin_right = 32.0
+margin_bottom = 32.0
+script = ExtResource( 16 )
+
+[node name="BackBufferCopy2" type="BackBufferCopy" parent="Decoder"]
+copy_mode = 2
+
+[node name="GlassBlock" type="ColorRect" parent="Decoder" groups=[
+"GlassBlock",
+]]
+visible = false
+material = SubResource( 16 )
+margin_right = 32.0
+margin_bottom = 32.0
+script = ExtResource( 16 )
+
+[node name="BackBufferCopy3" type="BackBufferCopy" parent="Decoder"]
+copy_mode = 2
+
+[node name="InvertBlock" type="ColorRect" parent="Decoder" groups=[
+"GlassBlock",
+]]
+visible = false
+material = SubResource( 21 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 32.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="OpenDialog" type="FileDialog" parent="."]
+margin_left = 136.0
+margin_top = 160.0
+margin_right = 936.0
+margin_bottom = 568.0
+popup_exclusive = true
+window_title = "Load Source Image..."
+resizable = true
+mode_overrides_title = false
+mode = 0
+access = 2
+filters = PoolStringArray( "*.png; Portable Network Graphics", "*.jpg; JPEG", "*.jpeg; JPEG", "*.webp; WebP", "*.svg; Scalable Vector Graphics" )
+current_dir = "D:/Projects/godot/Code/DrMask"
+current_path = "D:/Projects/godot/Code/DrMask/"
+
+[node name="OpenDialog2" type="FileDialog" parent="."]
+margin_left = 136.0
+margin_top = 160.0
+margin_right = 936.0
+margin_bottom = 568.0
+popup_exclusive = true
+window_title = "Load Diff Image..."
+resizable = true
+mode_overrides_title = false
+mode = 0
+access = 2
+filters = PoolStringArray( "*.png; Portable Network Graphics", "*.jpg; JPEG", "*.jpeg; JPEG", "*.webp; WebP", "*.svg; Scalable Vector Graphics" )
+current_dir = "D:/Projects/godot/Code/DrMask"
+current_path = "D:/Projects/godot/Code/DrMask/"
+
+[node name="SaveDialog" type="FileDialog" parent="."]
+margin_left = 136.0
+margin_top = 160.0
+margin_right = 936.0
+margin_bottom = 568.0
+popup_exclusive = true
+window_title = "Save Output..."
+resizable = true
+mode_overrides_title = false
+access = 2
+filters = PoolStringArray( "*.png; Portable Network Graphics" )
+current_dir = "D:/Projects/godot/Code/DrMask"
+current_path = "D:/Projects/godot/Code/DrMask/"
+
+[node name="BitCrushTest" type="Sprite" parent="."]
+material = SubResource( 19 )
+position = Vector2( 1560, 352 )
+texture = ExtResource( 22 )
+
+[node name="Label" type="Label" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
+script = SubResource( 24 )
+[connection signal="pressed" from="VBox/btnFile" to="." method="_on_btnFile_pressed"]
 [connection signal="text_changed" from="VBox/PassPhrase" to="." method="_on_PassPhrase_text_changed"]
+[connection signal="value_changed" from="VBox/SpinInvert" to="." method="_on_SpinInvert_value_changed"]
 [connection signal="value_changed" from="VBox/SpinGlass" to="." method="_on_SpinGlass_value_changed"]
+[connection signal="toggled" from="VBox/chkEncode" to="." method="_on_chkEncode_toggled"]
 [connection signal="resized" from="Scroll" to="Scroll/C" method="_on_Scroll_resized"]
 [connection signal="pressed" from="Zoom" to="." method="_on_Zoom_pressed"]
 [connection signal="index_pressed" from="Zoom/Menu" to="." method="_on_Zoom_Menu_index_pressed"]
+[connection signal="file_selected" from="OpenDialog" to="." method="_on_OpenDialog_file_selected"]
+[connection signal="file_selected" from="OpenDialog2" to="." method="_on_OpenDialog2_file_selected"]
+[connection signal="file_selected" from="SaveDialog" to="." method="_on_SaveDialog_file_selected"]
