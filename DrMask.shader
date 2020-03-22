@@ -1,4 +1,5 @@
 shader_type canvas_item;
+uniform bool enabled = true;
 uniform bool unmask;
 uniform sampler2D salt;
 uniform int block_size = 8;
@@ -45,4 +46,5 @@ void fragment() {
 	}
 
 	COLOR = diff;
+	if (!enabled) COLOR = c;
 }

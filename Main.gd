@@ -19,10 +19,13 @@ func _ready():
 
 	popup.connect("index_pressed", self, "_on_FileMenu_index_pressed")
 	
-	#Set up the Image right click quick load signals
+	#Set up the preview thumbnails up for quick load/clear access.
 	$VBox/SrcTex.connect("blip", self, "_on_FileMenu_index_pressed", [0])
 	$VBox/DestTex.connect("blip", self, "_on_FileMenu_index_pressed", [1])
+	$VBox/SrcTex.connect("blop", self, "clear_img", [$VBox/SrcTex])
+	$VBox/DestTex.connect("blop", self, "clear_img", [$VBox/DestTex])
 	
+
 	#Set up the zoom control.
 	var sq2 = sqrt(2) 
 	for i in 7:
@@ -65,16 +68,26 @@ func _on_SpinInvert_value_changed(value):
 	else:
 		loc = $Decoder/InvertBlock
 		
+	low_processor_mode(false)
 	loc.material.set_shader_param("block_size", value)
+	low_processor_mode(true)
 
 func _on_SpinGlass_value_changed(value):
+	low_processor_mode(false)
 	$View/GlassBlock.block_size = value
+	$Decoder/GlassBlock.block_size = value
+	low_processor_mode(true)
 
+func _on_SpinGlass2_value_changed(value):
+	low_processor_mode(false)
+	$View/GlassBlock2.block_size = value
+	$Decoder/GlassBlock2.block_size = value
+	low_processor_mode(true)
 
 
 func _on_FileMenu_index_pressed(index):
 	#Turn off low processor mode, otherwise the viewports will update lazily
-	OS.low_processor_usage_mode = false
+	low_processor_mode(false)
 
 	#Refresh files list.
 	$SaveDialog.invalidate()
@@ -91,12 +104,13 @@ func _on_FileMenu_index_pressed(index):
 		3:  #Save output
 			$SaveDialog.popup_centered()
 			pass
-		5:  #Clear dest
-			$VBox/DestTex.texture = nothing
-			reload_preview()
+		5:  #Clear src
+			clear_img($VBox/SrcTex)
+		6:  #Clear dest
+			clear_img($VBox/DestTex)
 
 func _on_files_dropped(files, _screen):
-	OS.low_processor_usage_mode = false
+	low_processor_mode(false)
 	#Load image.
 	var tex:ImageTexture = tryLoadImg(files[0])
 
@@ -188,29 +202,54 @@ func _on_SaveDialog_file_selected(path):
 	OS.alert("Error loading dragDrop file: %s (%s)" % [s,err], "Error")
 
 
+func clear_img(node:TextureRect):
+	node.texture = nothing
+	reload_preview()
+
+#Reloads the image preview from the loaded textures and resizes img rocessing rects.
 func reload_preview():
+	low_processor_mode(false)
 	$View/Src.texture = null
 	$Decoder/Diff.texture = null
 	
+	#Reload textures.
 	if $VBox/SrcTex.texture != nothing: 
 		$View/Src.texture = $VBox/SrcTex.texture.duplicate()
 		$View/Src.texture.flags = 0  #No filter, no mipmap
 	if $VBox/DestTex.texture != nothing: 
 		$Decoder/Diff.texture = $VBox/DestTex.texture.duplicate()
 		$Decoder/Diff.texture.flags = 0  #No filter, no mipmap
+
+	#Special case to use source instead of diff if decoding without a diff.
+	#The diff texture is set to the source texture, and the source is set to null.
+	#This allows usage of the invert and glass block shaders without a diff img.
+	#Simple QoL improvement to enhance UX.
+	if $VBox/SrcTex.texture != nothing and $VBox/DestTex.texture == nothing: 
+		if not $VBox/chkEncode.pressed:
+			#Use Src image as diff instead.
+			$View/Src.texture = null
+			$Decoder/Diff.texture = $VBox/SrcTex.texture.duplicate()
+			$Decoder/Diff.texture.flags = 0  #No filter, no mipmap
+
 	
+	#Reload the viewports and zoomer
 	$Decoder.reload()
 	$View.reload()
 	$Scroll/C.rect_size = Vector2.ONE
 	$Scroll/C.zoom = 1
 
+	#Enable/Disable DrMask shader if necessary.
+	var maskEnable:bool = not ($VBox/SrcTex.texture==nothing or $VBox/DestTex.texture==nothing)
+	$View/Dest.material.set_shader_param("enabled", maskEnable)
+
+
 	#Wait a second to resume low processor usage mode.
-	yield(get_tree().create_timer(0.2), "timeout")
-	OS.low_processor_usage_mode = true
+	low_processor_mode(true, 0.1)
 
 func _on_chkEncode_toggled(button_pressed):
 	#Disable low processor mode for a second to let the images update themselves.
-	OS.low_processor_usage_mode = false
+	low_processor_mode(false)
+	yield(get_tree(), "idle_frame")
 	
 	$View/Dest.material.set_shader_param("unmask", !button_pressed)
 	
@@ -220,4 +259,17 @@ func _on_chkEncode_toggled(button_pressed):
 	for o in $Decoder.get_children():
 		if o.is_in_group("GlassBlock"):
 			o.visible = !button_pressed
+			
+	low_processor_mode(true, 0.25)
 
+
+# This function is used to set up the timer for resuming low CPU mode.
+# This gives the app a chance to update lazy viewports.  If it were to be called
+# immediately, then the viewports won't have a chance to update themselves.
+func low_processor_mode(yes=true, delay=0.05):
+	if yes:
+		$LowCPUTimer.start(delay)
+	else:
+		OS.low_processor_usage_mode = false
+func _on_LowCPUTimer_timeout():
+	OS.low_processor_usage_mode = true

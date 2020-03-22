@@ -1,9 +1,11 @@
+// TODO:  Check glass block shader swizzle and flip order for encode/decode to make sure the passes encode/decode correctly!!!!!!
+
 shader_type canvas_item;
 uniform bool enabled = true;
 uniform int block_size = 8;
 uniform bool useSalt;
 uniform sampler2D salt;
-
+uniform bool encode = false;
 
 void fragment(){
 	vec2 ScreenUV = (SCREEN_UV);
@@ -31,9 +33,9 @@ void fragment(){
 			uv.y = vec2(pos*block_size + block_size).y - fpos.y;
 			uv.y /= float(textureSize(SCREEN_TEXTURE,0).y);
 	
-		} else if (n.x+n.y == 0) { //swizzle + rotate 180 (essentially rotate 270)
-//			fpos.xy = fpos.yx;
-			uv = vec2(pos*block_size + block_size) - fpos;
+		} else if (n.x+n.y == 0) { //swizzle.  Rotate 90ccw and h-flip.
+			fpos.xy = fpos.yx;
+			uv = vec2(pos*block_size) + fpos;
 			uv /= vec2(textureSize(SCREEN_TEXTURE,0));
 		}
 		

@@ -1,6 +1,7 @@
 extends TextureRect
 
-signal blip
+signal blip  #Right click
+signal blop  #XButton2
 
 #var mouse_inside:bool setget set_mouse_inside
 #
@@ -18,4 +19,6 @@ func _gui_input(event):
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == BUTTON_RIGHT:
 			emit_signal("blip")
+		elif event.button_index == BUTTON_XBUTTON2:
+			emit_signal("blop")
 
