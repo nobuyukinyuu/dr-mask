@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=2]
+[gd_scene load_steps=43 format=2]
 
 [ext_resource path="res://DrMask.shader" type="Shader" id=1]
 [ext_resource path="res://InvertBlockScreen.shader" type="Shader" id=2]
@@ -116,10 +116,28 @@ shader = ExtResource( 10 )
 shader_param/enabled = true
 shader_param/block_size = 0
 shader_param/useSalt = false
-shader_param/encode = false
+shader_param/encode = true
 shader_param/salt = SubResource( 15 )
 
 [sub_resource type="ShaderMaterial" id=20]
+resource_local_to_scene = true
+shader = ExtResource( 10 )
+shader_param/enabled = true
+shader_param/block_size = 0
+shader_param/useSalt = false
+shader_param/encode = true
+shader_param/salt = SubResource( 15 )
+
+[sub_resource type="ShaderMaterial" id=25]
+resource_local_to_scene = true
+shader = ExtResource( 10 )
+shader_param/enabled = true
+shader_param/block_size = 0
+shader_param/useSalt = false
+shader_param/encode = false
+shader_param/salt = SubResource( 15 )
+
+[sub_resource type="ShaderMaterial" id=26]
 resource_local_to_scene = true
 shader = ExtResource( 10 )
 shader_param/enabled = true
@@ -596,7 +614,7 @@ copy_mode = 2
 [node name="GlassBlock2" type="ColorRect" parent="Decoder" groups=[
 "GlassBlock",
 ]]
-material = SubResource( 20 )
+material = SubResource( 25 )
 margin_right = 32.0
 margin_bottom = 32.0
 script = ExtResource( 16 )
@@ -607,7 +625,7 @@ copy_mode = 2
 [node name="GlassBlock" type="ColorRect" parent="Decoder" groups=[
 "GlassBlock",
 ]]
-material = SubResource( 16 )
+material = SubResource( 26 )
 margin_right = 32.0
 margin_bottom = 32.0
 script = ExtResource( 16 )

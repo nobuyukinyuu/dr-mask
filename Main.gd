@@ -41,10 +41,15 @@ func _ready():
 
 
 func _on_PassPhrase_text_changed(_new_text):
+	low_processor_mode(false)
 	$PassView/Sprite.update()  #Update the salt texture.
 
 	$View/GlassBlock.useSalt = not $VBox/PassPhrase.text.empty()
+	$View/GlassBlock2.useSalt = not $VBox/PassPhrase.text.empty()
+	$Decoder/GlassBlock.useSalt = not $VBox/PassPhrase.text.empty()
+	$Decoder/GlassBlock2.useSalt = not $VBox/PassPhrase.text.empty()
 
+	low_processor_mode()
 
 #File menu
 func _on_btnFile_pressed():
@@ -259,7 +264,10 @@ func _on_chkEncode_toggled(button_pressed):
 	for o in $Decoder.get_children():
 		if o.is_in_group("GlassBlock"):
 			o.visible = !button_pressed
-			
+
+	$View/InvertBlock.update()
+	$Decoder/InvertBlock.update()
+
 	low_processor_mode(true, 0.25)
 
 

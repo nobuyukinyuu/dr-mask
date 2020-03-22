@@ -13,6 +13,7 @@ func _input(event):
 func _gui_input(event):
 	if event is InputEventMouseMotion:
 		if Input.is_mouse_button_pressed(BUTTON_LEFT):
+			owner.low_processor_mode(false)
 			scroll_horizontal -= event.relative.x
 			scroll_vertical -= event.relative.y
 
