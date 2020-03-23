@@ -30,11 +30,13 @@ void fragment() {
 		diff.rgb += (bg.rgb - c.rgb) * 0.5;
 		
 		//Now salt it.
-		diff.rgb = mod(saltColor.rgb + diff.rgb, vec3(1.0));
+//		diff.rgb = mod(saltColor.rgb + diff.rgb, vec3(1.0));
 	} else {    //unmask mode
 		diff.rgb = -c.rgb*2.0 + bg.rgb + vec3(1);
 //		diff.rgb = mod(bg.rgb - c.rgb, vec3(1.000001));
 	}
+	
+	diff.rgb = clamp(diff.rgb, 0.0, 1.0);
 	 
 	// Apply inverted checkerboard pattern.
 	if (block_size > 0){

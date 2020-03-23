@@ -22,29 +22,29 @@
 [ext_resource path="res://testImages/serril.png" type="Texture" id=22]
 [ext_resource path="res://BitCrush.shader" type="Shader" id=23]
 
-[sub_resource type="StyleBoxLine" id=5]
+[sub_resource type="StyleBoxLine" id=1]
 color = Color( 0.176471, 0.32549, 0.678431, 1 )
 vertical = true
 
-[sub_resource type="StyleBoxLine" id=6]
+[sub_resource type="StyleBoxLine" id=2]
 color = Color( 0.176471, 0.32549, 0.678431, 1 )
 thickness = 3
 vertical = true
 
-[sub_resource type="StyleBoxEmpty" id=7]
+[sub_resource type="StyleBoxEmpty" id=3]
 
-[sub_resource type="InputEventAction" id=8]
+[sub_resource type="InputEventAction" id=4]
 action = "ui_alt"
 
-[sub_resource type="ShortCut" id=9]
-shortcut = SubResource( 8 )
+[sub_resource type="ShortCut" id=5]
+shortcut = SubResource( 4 )
 
-[sub_resource type="ViewportTexture" id=10]
+[sub_resource type="ViewportTexture" id=6]
 viewport_path = NodePath("PassView")
 
-[sub_resource type="ProxyTexture" id=11]
+[sub_resource type="ProxyTexture" id=7]
 
-[sub_resource type="GDScript" id=12]
+[sub_resource type="GDScript" id=8]
 script/source = "extends Sprite
 
 func _draw():
@@ -83,32 +83,41 @@ func get_char_colors(c):
 	return output
 "
 
-[sub_resource type="ViewportTexture" id=13]
+[sub_resource type="ViewportTexture" id=9]
 viewport_path = NodePath("View")
 
-[sub_resource type="StyleBoxFlat" id=14]
+[sub_resource type="StyleBoxFlat" id=10]
 bg_color = Color( 0, 0, 0, 0.627451 )
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="ShaderMaterial" id=17]
+[sub_resource type="ShaderMaterial" id=11]
 resource_local_to_scene = true
 shader = ExtResource( 1 )
 shader_param/enabled = true
 shader_param/unmask = true
 shader_param/block_size = 0
 
-[sub_resource type="ViewportTexture" id=22]
+[sub_resource type="ViewportTexture" id=12]
 viewport_path = NodePath("Decoder")
 
-[sub_resource type="ShaderMaterial" id=23]
+[sub_resource type="ShaderMaterial" id=13]
 shader = ExtResource( 2 )
 shader_param/block_size = null
 
-[sub_resource type="ViewportTexture" id=15]
+[sub_resource type="ViewportTexture" id=14]
 viewport_path = NodePath("PassView")
+
+[sub_resource type="ShaderMaterial" id=15]
+resource_local_to_scene = true
+shader = ExtResource( 10 )
+shader_param/enabled = true
+shader_param/block_size = 0
+shader_param/useSalt = false
+shader_param/encode = true
+shader_param/salt = SubResource( 14 )
 
 [sub_resource type="ShaderMaterial" id=16]
 resource_local_to_scene = true
@@ -117,44 +126,35 @@ shader_param/enabled = true
 shader_param/block_size = 0
 shader_param/useSalt = false
 shader_param/encode = true
-shader_param/salt = SubResource( 15 )
+shader_param/salt = SubResource( 14 )
 
-[sub_resource type="ShaderMaterial" id=20]
-resource_local_to_scene = true
-shader = ExtResource( 10 )
-shader_param/enabled = true
-shader_param/block_size = 0
-shader_param/useSalt = false
-shader_param/encode = true
-shader_param/salt = SubResource( 15 )
-
-[sub_resource type="ShaderMaterial" id=25]
+[sub_resource type="ShaderMaterial" id=17]
 resource_local_to_scene = true
 shader = ExtResource( 10 )
 shader_param/enabled = true
 shader_param/block_size = 0
 shader_param/useSalt = false
 shader_param/encode = false
-shader_param/salt = SubResource( 15 )
+shader_param/salt = SubResource( 14 )
 
-[sub_resource type="ShaderMaterial" id=26]
+[sub_resource type="ShaderMaterial" id=18]
 resource_local_to_scene = true
 shader = ExtResource( 10 )
 shader_param/enabled = true
 shader_param/block_size = 0
 shader_param/useSalt = false
 shader_param/encode = false
-shader_param/salt = SubResource( 15 )
+shader_param/salt = SubResource( 14 )
 
-[sub_resource type="ShaderMaterial" id=21]
+[sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 2 )
 shader_param/block_size = null
 
-[sub_resource type="ShaderMaterial" id=19]
+[sub_resource type="ShaderMaterial" id=20]
 shader = ExtResource( 23 )
 shader_param/bits = 5
 
-[sub_resource type="GDScript" id=24]
+[sub_resource type="GDScript" id=21]
 script/source = "extends Label
 
 
@@ -188,10 +188,10 @@ __meta__ = {
 margin_right = 248.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 96, 24 )
-custom_styles/hover = SubResource( 5 )
-custom_styles/pressed = SubResource( 6 )
-custom_styles/normal = SubResource( 7 )
-shortcut = SubResource( 9 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/normal = SubResource( 3 )
+shortcut = SubResource( 5 )
 text = "  File"
 icon = ExtResource( 8 )
 align = 0
@@ -221,7 +221,7 @@ margin_top = 92.0
 margin_right = 248.0
 margin_bottom = 94.0
 rect_min_size = Vector2( 0, 2 )
-texture = SubResource( 10 )
+texture = SubResource( 6 )
 expand = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -442,8 +442,8 @@ usage = 1
 render_target_v_flip = true
 
 [node name="Sprite" type="Sprite" parent="PassView"]
-texture = SubResource( 11 )
-script = SubResource( 12 )
+texture = SubResource( 7 )
+script = SubResource( 8 )
 
 [node name="BG" type="TextureRect" parent="."]
 show_behind_parent = true
@@ -480,7 +480,7 @@ margin_left = 48.0
 margin_top = 40.0
 margin_right = 80.0
 margin_bottom = 72.0
-texture = SubResource( 13 )
+texture = SubResource( 9 )
 stretch_mode = 3
 __meta__ = {
 "_edit_use_anchors_": false
@@ -529,7 +529,7 @@ show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-custom_styles/panel = SubResource( 14 )
+custom_styles/panel = SubResource( 10 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -550,8 +550,8 @@ script = ExtResource( 17 )
 centered = false
 
 [node name="Dest" type="Sprite" parent="View"]
-material = SubResource( 17 )
-texture = SubResource( 22 )
+material = SubResource( 11 )
+texture = SubResource( 12 )
 centered = false
 
 [node name="BackBufferCopy3" type="BackBufferCopy" parent="View"]
@@ -561,7 +561,7 @@ copy_mode = 2
 "GlassBlock",
 ]]
 visible = false
-material = SubResource( 23 )
+material = SubResource( 13 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = 32.0
@@ -576,7 +576,7 @@ copy_mode = 2
 "GlassBlock",
 ]]
 visible = false
-material = SubResource( 16 )
+material = SubResource( 15 )
 margin_right = 32.0
 margin_bottom = 32.0
 script = ExtResource( 16 )
@@ -588,7 +588,7 @@ copy_mode = 2
 "GlassBlock",
 ]]
 visible = false
-material = SubResource( 20 )
+material = SubResource( 16 )
 margin_right = 32.0
 margin_bottom = 32.0
 script = ExtResource( 16 )
@@ -614,7 +614,7 @@ copy_mode = 2
 [node name="GlassBlock2" type="ColorRect" parent="Decoder" groups=[
 "GlassBlock",
 ]]
-material = SubResource( 25 )
+material = SubResource( 17 )
 margin_right = 32.0
 margin_bottom = 32.0
 script = ExtResource( 16 )
@@ -625,7 +625,7 @@ copy_mode = 2
 [node name="GlassBlock" type="ColorRect" parent="Decoder" groups=[
 "GlassBlock",
 ]]
-material = SubResource( 26 )
+material = SubResource( 18 )
 margin_right = 32.0
 margin_bottom = 32.0
 script = ExtResource( 16 )
@@ -636,7 +636,7 @@ copy_mode = 2
 [node name="InvertBlock" type="ColorRect" parent="Decoder" groups=[
 "GlassBlock",
 ]]
-material = SubResource( 21 )
+material = SubResource( 19 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = 32.0
@@ -690,7 +690,7 @@ current_path = "D:/Projects/godot/Code/DrMask/"
 
 [node name="BitCrushTest" type="Sprite" parent="."]
 visible = false
-material = SubResource( 19 )
+material = SubResource( 20 )
 position = Vector2( 1560, 352 )
 texture = ExtResource( 22 )
 
@@ -700,7 +700,7 @@ margin_left = 216.0
 margin_top = 16.0
 margin_right = 256.0
 margin_bottom = 30.0
-script = SubResource( 24 )
+script = SubResource( 21 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
