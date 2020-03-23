@@ -28,3 +28,4 @@ func reload():
 	for o in get_children():
 		if o is ColorRect and o.is_in_group("GlassBlock"):
 			o.rect_size = size
+

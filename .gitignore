@@ -25,3 +25,4 @@ workfiles/*
 addons/
 ref/
 testImages/
+*.import

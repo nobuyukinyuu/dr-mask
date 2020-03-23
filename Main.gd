@@ -70,14 +70,10 @@ func _on_Zoom_Menu_index_pressed(index):
 func _on_SpinInvert_value_changed(value):
 	update_string()
 	
-	var loc 
-	if $VBox/chkEncode.pressed:
-		loc = $View/InvertBlock
-	else:
-		loc = $Decoder/InvertBlock
 		
 	low_processor_mode(false)
-	loc.material.set_shader_param("block_size", value)
+	$View/InvertBlock.material.set_shader_param("block_size", value)
+	$Decoder/InvertBlock.material.set_shader_param("block_size", value)
 	low_processor_mode(true)
 
 func _on_SpinGlass_value_changed(value):
@@ -269,9 +265,6 @@ func _on_chkEncode_toggled(button_pressed):
 	for o in $Decoder.get_children():
 		if o.is_in_group("GlassBlock"):
 			o.visible = !button_pressed
-
-	$View/InvertBlock.update()
-	$Decoder/InvertBlock.update()
 
 	low_processor_mode(true, 0.25)
 
