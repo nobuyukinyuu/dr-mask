@@ -41,6 +41,7 @@ func _ready():
 
 
 func _on_PassPhrase_text_changed(_new_text):
+	update_string()
 	low_processor_mode(false)
 	$PassView/Sprite.update()  #Update the salt texture.
 
@@ -67,6 +68,8 @@ func _on_Zoom_Menu_index_pressed(index):
 
 
 func _on_SpinInvert_value_changed(value):
+	update_string()
+	
 	var loc 
 	if $VBox/chkEncode.pressed:
 		loc = $View/InvertBlock
@@ -78,12 +81,14 @@ func _on_SpinInvert_value_changed(value):
 	low_processor_mode(true)
 
 func _on_SpinGlass_value_changed(value):
+	update_string()
 	low_processor_mode(false)
 	$View/GlassBlock.block_size = value
 	$Decoder/GlassBlock.block_size = value
 	low_processor_mode(true)
 
 func _on_SpinGlass2_value_changed(value):
+	update_string()
 	low_processor_mode(false)
 	$View/GlassBlock2.block_size = value
 	$Decoder/GlassBlock2.block_size = value
@@ -270,6 +275,65 @@ func _on_chkEncode_toggled(button_pressed):
 
 	low_processor_mode(true, 0.25)
 
+#Called whenever we need to update the composite "autoconfigure" string
+func update_string():
+	var s = ""
+	s += String($VBox/SpinGlass.value) + ":"
+	s += $VBox/PassPhrase.text + ","
+	s += String($VBox/SpinGlass2.value) + ":"
+
+	#Placeholder until dual passphrases are supported.  "@" evaluates to black.
+	s += "@"
+#	s += $VBox/PassPhrase2.text #+ ","
+
+	s += "?" + String($VBox/SpinInvert.value)
+	
+	$VBox/Auto/Txt.text = s
+
+func _on_btnCopy_pressed():
+	if not $VBox/Auto/Txt.text.empty():
+		OS.clipboard = $VBox/Auto/Txt.text
+		OS.request_attention()  #Subtly inform user copy succeeded.
+		global.beep()
+
+#Autoconfigure inputs from a string
+func _on_Auto_text_entered(new_text):
+	_on_btnInput_pressed()
+func _on_btnInput_pressed():
+	if not $VBox/Auto/Txt.text.empty():
+		var s = $VBox/Auto/Txt.text
+		var part = s.split("?",false)
+		if part.size() != 2:
+			buzz()
+			return
+		s = part[0]
+		$VBox/SpinInvert.value = int(part[1])
+		
+		#Split the string again, this time at ",". In the future this may
+		#support an arbitrary number of glass block passes....
+		part = s.split(",", false)
+		if part.size() != 2:
+			buzz()
+			return
+
+		#Finally, get the components of each final part.
+		var part2 = part[0].split(":")
+		if part2.size() != 2:
+			buzz()
+			return
+		$VBox/SpinGlass.value = int(part2[0])
+		$VBox/PassPhrase.text = part2[1]
+
+		part2 = part[1].split(":")
+		if part2.size() != 2:
+			buzz()
+			return		
+		$VBox/SpinGlass2.value = int(part2[0])
+#		$VBox/PassPhrase2.text = part2[1]
+	
+	else:
+		buzz()
+		return
 
 # This function is used to set up the timer for resuming low CPU mode.
 # This gives the app a chance to update lazy viewports.  If it were to be called
@@ -281,3 +345,13 @@ func low_processor_mode(yes=true, delay=0.05):
 		OS.low_processor_usage_mode = false
 func _on_LowCPUTimer_timeout():
 	OS.low_processor_usage_mode = true
+
+
+
+func buzz():
+	global.buzzer()
+	yield(get_tree().create_timer(0.1), "timeout")
+	global.buzzer()
+
+
+
