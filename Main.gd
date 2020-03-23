@@ -316,7 +316,7 @@ func _on_btnInput_pressed():
 			buzz()
 			return
 
-		#Finally, get the components of each final part.
+		#Finally, get the components of each final part. 
 		var part2 = part[0].split(":")
 		if part2.size() != 2:
 			buzz()
@@ -324,12 +324,20 @@ func _on_btnInput_pressed():
 		$VBox/SpinGlass.value = int(part2[0])
 		$VBox/PassPhrase.text = part2[1]
 
+		#Update the passphrase texture.
+		_on_PassPhrase_text_changed(part2[1])
+	
+		yield(get_tree(), "idle_frame")
+
+		#Get the second pass components.
 		part2 = part[1].split(":")
 		if part2.size() != 2:
 			buzz()
 			return		
 		$VBox/SpinGlass2.value = int(part2[0])
+		#Line below reserved for future use (2 passphrase support)
 #		$VBox/PassPhrase2.text = part2[1]
+	
 	
 	else:
 		buzz()
