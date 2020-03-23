@@ -3,6 +3,9 @@
 *.exe
 *.dll
 *.pck
+*.rar
+*.zip
+*.7z
 .build/
 
 # Godot-specific ignores
