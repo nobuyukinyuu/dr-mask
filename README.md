@@ -6,7 +6,9 @@ Dr-mask is an image masking utility used to produce difference maps from source 
 
 
 ## Purpose
-Some platforms have become increasingly hostile towards artists recently.  In order to comply with their terms of service, dr-mask allows an artist to post a safe image (the *source* image) to the host platform, and host another image elsewhere containing encoded data which can be used on the source image to produce the *target* image. The encoded data is in `*.png` format, allowing the artist many alternative hosting options. The original target image never leaves the artist's computer;  it is recreated on the client end using what data is provided.  
+Some platforms have become increasingly hostile towards artists recently.  In order to comply with their terms of service, dr-mask allows an artist to post a safe image (the *source* image) to the host platform, and host another image elsewhere containing encoded data which can be used on the source image to produce the *target* image. The encoded data is in `*.png` format, allowing the artist many alternative hosting options. 
+
+The original target image never leaves the artist's computer;  it is recreated on the client end using what data is provided.  Since no part of the target image is hosted on the censorious platform (only the source image), full compliance with the Terms of Service of most of these platforms can be achieved.  The source image can be uploaded unchanged.
 
 ## How it Works
 Most users only need to recreate a target image, so dr-mask starts in decoding mode by default.  Loading the source image with an overlay (in this case a difference map using plain settings) will produce the target image.  
