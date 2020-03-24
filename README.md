@@ -25,11 +25,25 @@ The currently available obfuscation techniques are an inverted block mask and 2-
 ## Tips
 * Right-clicking an image preview is a quick way to bring up the load dialog.
 * MouseX2 (aka Mouse5) will clear an image.
+* Drag and drop is also (somewhat) supported.  Drag your file to the image preview you wish to load into.
+* Automatic configuration via a string can be copied to the clipboard or input by a user for quick manual configuration.  *(see below)*
 * Using *only* a source image in either encode or decode mode lets users play with default settings.  
   * However, don't forget to use the proper mode, as multiple shader passes need to be processed in stack order.
 * For each pass, try using some numbers that permutate at irregular intervals;  this produces a more scrambled pattern.
   * Sometimes it's better to use numbers easily divisible by each other, though, to make it more difficult to guess the setting.
 * Longer passwords increase entropy in the image and are more difficult to reverse-engineer. Each character encodes 2 blocks and is repeated throughout the image.
+
+## Auto-configure
+Automatic configuration strings can be used as a quick way to set all settings for an image at once.  Artists may distribute the string to end-users on the platform of their choice.  The format is as follows:
+
+![image](https://user-images.githubusercontent.com/1023003/77374784-9f378200-6d39-11ea-8de9-4e76a904d183.png)
+* `MONOCHROME`: Reserved characters, required to parse the string.
+* `YELLOW (0)`:  Glass block size (Pass 1)
+* `BLUE   (1)`: PassPhrase
+* `GREEN  (2)`:  Glass block size (Pass 2)
+* `PINK   (3)`:  Inverse block size
+
+If the string was input incorrectly, a sound will play indicating failure.
 
 ## How it *really* works (Technical information)
 Dr-mask was created with [Godot Engine](https://godotengine.org/).
