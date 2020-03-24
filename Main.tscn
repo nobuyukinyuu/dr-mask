@@ -403,7 +403,7 @@ rect_min_size = Vector2( 0, 8 )
 margin_top = 566.0
 margin_right = 248.0
 margin_bottom = 580.0
-text = "Diff Image:"
+text = "Overlay Image:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
