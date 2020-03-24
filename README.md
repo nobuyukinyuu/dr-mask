@@ -45,7 +45,7 @@ Automatic configuration strings can be used as a quick way to set all settings f
 * `GREEN  (2)`:  Glass block size (Pass 2)
 * `PINK   (3)`:  Inverse block size
 
-If the string was input incorrectly, a sound will play indicating failure.
+If the string being input was formatted incorrectly when processing, a sound will play indicating failure.
 
 ## How it *really* works (Technical information)
 Dr-mask was created with [Godot Engine](https://godotengine.org/).
