@@ -69,6 +69,9 @@ Inversion shaders operate on a similar principle, but in a checkerboard pattern,
 * Improved color fidelity for target image
 * More obfuscation techniques
 
+## Download
+The latest release updates are here:  https://github.com/nobuyukinyuu/dr-mask/releases
+
 ## Special Thanks
 A thank you to all artists who found this program useful and shared it with others.  
 
