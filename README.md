@@ -1,5 +1,5 @@
 #  ![icon](https://user-images.githubusercontent.com/1023003/77360451-5f61a200-6d1b-11ea-9ace-eeaf54523d2f.png) DR-Mask
-Dr-mask is a 3-way image masking utility used to produce difference maps from source images that can be used to create target images on the client-end.
+Dr-mask is an image masking utility used to produce difference maps from source images that can be used to create target images on the client-end.
 
 ## Screenshot
 ![](https://user-images.githubusercontent.com/1023003/77353412-e9efd480-6d0e-11ea-810a-05569fc36c86.png)
