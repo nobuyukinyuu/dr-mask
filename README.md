@@ -63,6 +63,7 @@ Inversion shaders operate on a similar principle, but in a checkerboard pattern,
 ## Planned Features
 * Ability to specify rectangles of specific interest to undergo the encoding process
 * Archive format which can contain multiple diff images as well as processing configuration metadata.
+* Ability to support multiple outputs for variations.
 * Arbitary multiple shader passes
 * Salting via color-modulation texture
 * Optional individual password per image pass.
